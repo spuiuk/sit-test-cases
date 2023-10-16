@@ -19,9 +19,6 @@ smbtorture_tests_file = script_root + "/smbtorture-tests-info.yml"
 test_info_file = os.getenv("TEST_INFO_FILE")
 test_info = testhelper.read_yaml(test_info_file)
 
-# Temp filename containing the output of run commands.
-output = testhelper.get_tmp_file()
-
 
 def smbtorture(share_name: str, test: str, tmp_output: Path) -> bool:
     # build smbtorture command
@@ -93,22 +90,19 @@ def smbtorture(share_name: str, test: str, tmp_output: Path) -> bool:
             universal_newlines=True,
         )
 
-    # Error - Print out the debugging data for this smbtorture run
-    if format_subunitc.returncode != 0:
-        # print the commands as they will be run.
-        cmd = "%s|%s|%s" % (
-            " ".join(smbtorture_cmd),
-            " ".join(filter_subunit_cmd),
-            " ".join(format_subunit_cmd),
-        )
-        print("Command: " + cmd + "\n\n")
-        # Print the intermediate output
-        with open(tmp_output, "r") as filter_subunit_stdout:
-            print(filter_subunit_stdout.read())
-        print("\n" + format_subunitc.stdout)
-        return False
+    # print the commands as they will be run.
+    cmd = "%s|%s|%s" % (
+        " ".join(smbtorture_cmd),
+        " ".join(filter_subunit_cmd),
+        " ".join(format_subunit_cmd),
+    )
+    print("Command: " + cmd + "\n\n")
+    # Print the intermediate output
+    with open(tmp_output, "r") as filter_subunit_stdout:
+        print(filter_subunit_stdout.read())
+    print("\n" + format_subunitc.stdout)
 
-    return True
+    return format_subunitc.returncode == 0
 
 
 def list_smbtorture_tests():
@@ -128,6 +122,7 @@ def generate_smbtorture_tests() -> typing.List[typing.Tuple[str, str]]:
 
 @pytest.mark.parametrize("share_name,test", generate_smbtorture_tests())
 def test_smbtorture(share_name: str, test: str) -> None:
+    output = testhelper.get_tmp_file()
     ret = smbtorture(share_name, test, output)
     if os.path.exists(output):
         os.unlink(output)
