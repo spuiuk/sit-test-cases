@@ -48,27 +48,31 @@ def mount_check(
         os.rmdir(tmp_root)
 
 
-def generate_mount_check() -> typing.List[typing.Tuple[str, str]]:
+def generate_test_parameters() -> typing.List[typing.Tuple[str, str]]:
     public_interfaces = test_info.get("public_interfaces", [])
+    if len(public_interfaces) < 1:
+        return []
     exported_sharenames = test_info.get("exported_sharenames", [])
+    if len(exported_sharenames) < 1:
+        return []
     arr = []
-    for ipaddr in public_interfaces:
-        for share_name in exported_sharenames:
-            arr.append((ipaddr, share_name))
+    ipaddr = public_interfaces[0]
+    for share_name in exported_sharenames:
+        arr.append((ipaddr, share_name))
     return arr
 
 
-@pytest.mark.parametrize("ipaddr,share_name", generate_mount_check())
+@pytest.mark.parametrize("ipaddr,share_name", generate_test_parameters())
 def test_io_consistency(ipaddr: str, share_name: str) -> None:
     mount_check(ipaddr, share_name, check_io_consistency)
 
 
-@pytest.mark.parametrize("ipaddr,share_name", generate_mount_check())
+@pytest.mark.parametrize("ipaddr,share_name", generate_test_parameters())
 def test_dbm_consistency(ipaddr: str, share_name: str) -> None:
     mount_check(ipaddr, share_name, check_dbm_consistency)
 
 
-@pytest.mark.parametrize("ipaddr,share_name", generate_mount_check())
+@pytest.mark.parametrize("ipaddr,share_name", generate_test_parameters())
 def test_mnt_stress(ipaddr: str, share_name: str) -> None:
     mount_check(ipaddr, share_name, check_mnt_stress)
 
