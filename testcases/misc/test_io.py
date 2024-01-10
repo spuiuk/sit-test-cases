@@ -101,12 +101,10 @@ def _run_checks(dsets: typing.List[DataPath]) -> None:
         dset.verify_noent()
 
 
-def _check_io_consistency(test_dir: Path) -> None:
-    base = None
+def _check_io_consistency(base: Path) -> None:
     try:
         print("\n")
-        base = test_dir / "test_io_consistency"
-        base.mkdir(parents=True)
+        base.mkdir()
         # Case-1: single 4K file
         _run_checks(_make_datasets(base, 4096, 1))
         # Case-2: single 16M file
@@ -136,9 +134,11 @@ def _perform_io_consistency_check(directory: Path) -> None:
 
 @pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_check_io_consistency(setup_mount: Path) -> None:
-    _perform_io_consistency_check(setup_mount)
+    base = setup_mount / "test_io_consistency"
+    _perform_io_consistency_check(base)
 
 
 @pytest.mark.parametrize("test_dir", gen_params_premounted())
 def test_check_io_consistency_premounted(test_dir: Path) -> None:
-    _perform_io_consistency_check(test_dir)
+    base = test_dir / "test_io_consistency"
+    _perform_io_consistency_check(base)
