@@ -9,7 +9,7 @@ import shutil
 import typing
 import random
 from pathlib import Path
-from .conftest import generate_mount_check, generate_mount_check_premounted
+from .conftest import gen_params, gen_params_premounted
 
 
 class Record:
@@ -101,13 +101,13 @@ def _run_dbm_consistency_checks(base_path: Path) -> None:
         shutil.rmtree(base_path, ignore_errors=True)
 
 
-@pytest.mark.parametrize("setup_mount", generate_mount_check(), indirect=True)
+@pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_dbm_consistency(setup_mount: Path) -> None:
     base = setup_mount / "dbm-consistency"
     _run_dbm_consistency_checks(base)
 
 
-@pytest.mark.parametrize("test_dir", generate_mount_check_premounted())
+@pytest.mark.parametrize("test_dir", gen_params_premounted())
 def test_dbm_consistency_premounted(test_dir: Path) -> None:
     base = test_dir / "dbm-consistency"
     _run_dbm_consistency_checks(base)

@@ -2,7 +2,7 @@ import pytest
 import threading
 import testhelper
 from pathlib import Path
-from .conftest import generate_mount_check, generate_mount_check_premounted
+from .conftest import gen_params, gen_params_premounted
 
 
 def _perform_file_operations(
@@ -51,11 +51,11 @@ def _run_stress_tests(directory: Path) -> None:
     )
 
 
-@pytest.mark.parametrize("setup_mount", generate_mount_check(), indirect=True)
+@pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_check_mnt_stress(setup_mount: Path) -> None:
     _run_stress_tests(setup_mount)
 
 
-@pytest.mark.parametrize("test_dir", generate_mount_check_premounted())
+@pytest.mark.parametrize("test_dir", gen_params_premounted())
 def test_check_mnt_stress_premounted(test_dir: Path) -> None:
     _run_stress_tests(test_dir)

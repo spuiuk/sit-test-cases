@@ -9,7 +9,7 @@ import typing
 import testhelper
 import random
 from pathlib import Path
-from .conftest import generate_mount_check, generate_mount_check_premounted
+from .conftest import gen_params, gen_params_premounted
 
 
 class DataPath:
@@ -134,11 +134,11 @@ def _perform_io_consistency_check(directory: Path) -> None:
     _check_io_consistency(directory)
 
 
-@pytest.mark.parametrize("setup_mount", generate_mount_check(), indirect=True)
+@pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_check_io_consistency(setup_mount: Path) -> None:
     _perform_io_consistency_check(setup_mount)
 
 
-@pytest.mark.parametrize("test_dir", generate_mount_check_premounted())
+@pytest.mark.parametrize("test_dir", gen_params_premounted())
 def test_check_io_consistency_premounted(test_dir: Path) -> None:
     _perform_io_consistency_check(test_dir)

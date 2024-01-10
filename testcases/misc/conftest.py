@@ -45,7 +45,7 @@ def setup_mount(
         raise Exception(f"Teardown failed: {str(e)}")
 
 
-def generate_mount_check() -> typing.List[typing.Any]:
+def gen_params() -> typing.List[typing.Any]:
     ipaddr = test_info["public_interfaces"][0]
     exported_sharenames = test_info.get("exported_sharenames", [])
     arr = []
@@ -56,5 +56,5 @@ def generate_mount_check() -> typing.List[typing.Any]:
     return arr
 
 
-def generate_mount_check_premounted() -> typing.List[Path]:
+def gen_params_premounted() -> typing.List[Path]:
     return testhelper.get_premounted_shares(test_info)
