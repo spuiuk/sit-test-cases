@@ -1,6 +1,7 @@
 import pytest
 import threading
 import testhelper
+import shutil
 from pathlib import Path
 from .conftest import gen_params, gen_params_premounted
 
@@ -46,16 +47,22 @@ def _stress_test(
 
 
 def _run_stress_tests(directory: Path) -> None:
-    _stress_test(
-        directory, num_clients=20, num_operations=40, file_size=2**25
-    )
+    directory.mkdir(exist_ok=True)
+    try:
+        _stress_test(
+            directory, num_clients=20, num_operations=40, file_size=2**25
+        )
+    finally:
+        shutil.rmtree(directory, ignore_errors=True)
 
 
 @pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_check_mnt_stress(setup_mount: Path) -> None:
-    _run_stress_tests(setup_mount)
+    base = setup_mount / "stress-test"
+    _run_stress_tests(base)
 
 
 @pytest.mark.parametrize("test_dir", gen_params_premounted())
 def test_check_mnt_stress_premounted(test_dir: Path) -> None:
-    _run_stress_tests(test_dir)
+    base = test_dir / "stress-test"
+    _run_stress_tests(base)
