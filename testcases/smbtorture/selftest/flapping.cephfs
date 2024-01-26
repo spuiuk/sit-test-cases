@@ -4,3 +4,7 @@
 # This is a known fail for samba4 env. We explicitly mark env as
 # samba3 which means we don't ever match with this knownfail.
 ^samba3.smb2.create.quota-fake-file
+
+# Ignore due to lack of proper multichannel setup.
+^samba3.smb2.session.bind2
+^samba3.smb2.session.two_logoff
