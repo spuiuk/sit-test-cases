@@ -29,4 +29,3 @@ check-flake8:
 .PHONY: check-black
 check-black:
 	$(call runtox, "black")
-

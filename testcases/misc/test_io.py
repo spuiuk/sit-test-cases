@@ -132,6 +132,7 @@ def _perform_io_consistency_check(directory: Path) -> None:
     _check_io_consistency(directory)
 
 
+@pytest.mark.privileged
 @pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_check_io_consistency(setup_mount: Path) -> None:
     base = setup_mount / "test_io_consistency"

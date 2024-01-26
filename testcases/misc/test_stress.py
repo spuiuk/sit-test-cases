@@ -56,6 +56,7 @@ def _run_stress_tests(directory: Path) -> None:
         shutil.rmtree(directory, ignore_errors=True)
 
 
+@pytest.mark.privileged
 @pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_check_mnt_stress(setup_mount: Path) -> None:
     base = setup_mount / "stress-test"

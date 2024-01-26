@@ -101,6 +101,7 @@ def _run_dbm_consistency_checks(base_path: Path) -> None:
         shutil.rmtree(base_path, ignore_errors=True)
 
 
+@pytest.mark.privileged
 @pytest.mark.parametrize("setup_mount", gen_params(), indirect=True)
 def test_dbm_consistency(setup_mount: Path) -> None:
     base = setup_mount / "dbm-consistency"

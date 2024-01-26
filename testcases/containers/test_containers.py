@@ -75,6 +75,7 @@ def generate_containers_test() -> typing.List[typing.Tuple[str, str, str]]:
     return arr
 
 
+@pytest.mark.privileged
 @pytest.mark.parametrize(
     "ipaddr,share_name,test",
     generate_containers_test(),
