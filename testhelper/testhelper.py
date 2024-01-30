@@ -206,3 +206,21 @@ def get_shares_with_directmnt(test_info: dict) -> typing.List[str]:
         if share["backend"].get("path", False):
             arr.append(share["name"])
     return arr
+
+
+def get_conf_extra(test_info: dict, key: str) -> typing.Any:
+    """
+    We can pass a test specific configuration under extra in the
+    test-info.yml file. This function allows easy access to this
+    configuration section.
+
+    Parameters:
+    test_info: Dict containing the parsed yaml file.
+    key: key for the extra configuration
+    Returns:
+    contents in extra[key]
+    """
+    extra = test_info.get("extra")
+    if extra is None or key not in extra:
+        return None
+    return extra[key]
