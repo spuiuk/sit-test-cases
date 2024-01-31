@@ -26,7 +26,7 @@ check-mypy:
 check-flake8:
 	$(call runtox, "flake8")
 
-PHONY: check-black
+.PHONY: check-black
 check-black:
 	$(call runtox, "black")
 
