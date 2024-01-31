@@ -114,7 +114,7 @@ def list_smbtorture_tests():
 def generate_smbtorture_tests() -> typing.List[typing.Tuple[str, str]]:
     smbtorture_info = list_smbtorture_tests()
     arr = []
-    for share_name in test_info.get("exported_sharenames", []):
+    for share_name in testhelper.get_exported_shares(test_info):
         for torture_test in smbtorture_info:
             arr.append((share_name, torture_test))
     return arr

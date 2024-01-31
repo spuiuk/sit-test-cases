@@ -61,9 +61,9 @@ def generate_consistency_check(
     if not test_info_file:
         return []
     arr = []
-    for ipaddr in test_info_file["public_interfaces"]:
-        for share_name in test_info_file["exported_sharenames"]:
-            arr.append((ipaddr, share_name))
+    for share in testhelper.get_exported_shares(test_info):
+        s = testhelper.get_share(test_info, share)
+        arr.append((s["server"], s["name"]))
     return arr
 
 

@@ -87,3 +87,14 @@ def get_premounted_shares(test_info: dict) -> typing.List[Path]:
     """
     premounted_shares = test_info.get("premounted_shares", [])
     return [Path(mnt) for mnt in premounted_shares]
+
+
+def get_exported_shares(test_info: dict) -> typing.List[str]:
+    """Get the list of exported shares
+
+    Parameters:
+    test_info: Dict containing the parsed yaml file.
+    Returns:
+    list of exported shares
+    """
+    return test_info.get("exported_sharenames", [])

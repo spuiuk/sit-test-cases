@@ -46,12 +46,12 @@ def setup_mount(
 
 
 def gen_params() -> typing.List[typing.Any]:
-    ipaddr = test_info["public_interfaces"][0]
-    exported_sharenames = test_info.get("exported_sharenames", [])
+    exported_sharenames = testhelper.get_exported_shares(test_info)
     arr = []
     for share_name in exported_sharenames:
+        server = testhelper.get_share(test_info, share_name)["server"]
         arr.append(
-            pytest.param((ipaddr, share_name), id=f"{ipaddr}-{share_name}")
+            pytest.param((server, share_name), id=f"{server}-{share_name}")
         )
     return arr
 

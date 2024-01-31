@@ -66,12 +66,11 @@ def containers_check(ipaddr: str, share_name: str, test: str) -> None:
 
 
 def generate_containers_test() -> typing.List[typing.Tuple[str, str, str]]:
-    # Use the first given public_interface for our tests
-    ipaddr = test_info["public_interfaces"][0]
     arr = []
-    for share_name in test_info["exported_sharenames"]:
+    for share_name in testhelper.get_exported_shares(test_info):
+        server = testhelper.get_share(test_info, share_name)["server"]
         for test in container_tests.keys():
-            arr.append((ipaddr, share_name, test))
+            arr.append((server, share_name, test))
     return arr
 
 
