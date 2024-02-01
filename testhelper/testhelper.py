@@ -190,3 +190,19 @@ def get_exported_shares(test_info: dict) -> typing.List[str]:
         if not is_premounted_share(share):
             arr.append(share["name"])
     return arr
+
+
+def get_shares_with_directmnt(test_info: dict) -> typing.List[str]:
+    """
+    Get list of shares with directmnt enabled
+
+    Parameters:
+    test_info: Dict containing the parsed yaml file.
+    Returns:
+    list of shares
+    """
+    arr = []
+    for share in get_shares(test_info).values():
+        if share["backend"].get("path", False):
+            arr.append(share["name"])
+    return arr

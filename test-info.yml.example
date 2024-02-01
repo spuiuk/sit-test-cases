@@ -17,6 +17,8 @@ shares:
     backend:
       # If present backend filesystem
       name: cephfs.vfs
+      # If present, provides direct access to share
+      path: /mnt/backend/export1
     # If present, username to perform the tests with on this share
     users:
       test2: x
