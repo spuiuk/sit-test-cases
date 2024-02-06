@@ -33,3 +33,7 @@ exclude = [
     "^testcases/smbtorture/selftest",
 ]
 
+[tool.pytest.ini_options]
+markers = [
+    "privileged: marks tests as requiring to be run as privileged processes.",
+]
