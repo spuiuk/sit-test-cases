@@ -31,3 +31,42 @@
 - smb2.bench
 - smb2.winattr2
 - smb2.charset
+- smb2.ea
+- smb2.dir
+- smb2.getinfo
+- smb2.delete-on-close-perms
+- smb2.durable-open
+- smb2.setinfo
+- smb2.name-mangling
+- smb2.timestamp_resolution
+- smb2.fileid
+- smb2.dosmode
+
+#To test
+#- smb2.acls_non_canonical
+#- smb2.acls
+#- smb2.aio_delay
+#- smb2.change_notify_disabled
+#- smb2.compound
+#- smb2.compound_async
+#- smb2.hold-oplock
+#- smb2.hold-sharemode
+#- smb2.ioctl
+#- smb2.ioctl-on-stream
+#- smb2.kernel-oplocks
+#- smb2.lease
+#- smb2.notify
+#- smb2.oplock
+#- smb2.replay
+#- smb2.samba3misc
+#- smb2.scan
+#- smb2.session-require-signing
+#- smb2.set-sparse-ioctl
+#- smb2.streams
+#- smb2.twrp
+#- smb2.zero-data-ioctl
+
+#Fails on cephfs.vfs
+#- smb2.durable-v2-delay
+#- smb2.durable-v2-open
+
