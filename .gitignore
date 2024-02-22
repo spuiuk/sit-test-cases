@@ -1,2 +1,9 @@
 /.tox
 __pycache__
+.pytest_cache
+# Testinfo file to set out server & shares to test.
+/test-info.yml
+# modified tox file for customised testing
+/mytox.ini
+# artifacts created by vscode
+/tags
