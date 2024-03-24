@@ -63,35 +63,6 @@ def cifs_umount(mount_point: Path) -> int:
     return ret
 
 
-def smbclient(
-    mount_params: typing.Dict[str, str], cmds: str
-) -> typing.Tuple[int, str]:
-    """Run the following command on smbclient and return the output.
-
-    Parameters:
-    mount_params: Dict containing the mount parameters.
-    cmds: String containg the ';' separated commands to run.
-
-    Returns:
-    int: Return value from the shell execution
-    string: stdout
-    """
-    smbclient_cmd = [
-        "smbclient",
-        "--user=%s%%%s" % (mount_params["username"], mount_params["password"]),
-        "//%s/%s" % (mount_params["host"], mount_params["share"]),
-        "-c",
-        cmds,
-    ]
-    ret = subprocess.run(
-        smbclient_cmd,
-        universal_newlines=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    )
-    return (ret.returncode, ret.stdout)
-
-
 def check_cmds(cmds: typing.List[str]) -> Path:
     """Return first file path which exists.
 
