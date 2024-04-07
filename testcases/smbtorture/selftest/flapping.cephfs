@@ -8,3 +8,11 @@
 # Ignore due to lack of proper multichannel setup.
 ^samba3.smb2.session.bind2
 ^samba3.smb2.session.two_logoff
+
+# https://github.com/samba-in-kubernetes/sit-test-cases/issues/71
+# https://tracker.ceph.com/issues/65043
+samba3.smb2.timestamps.time_t_15032385535
+samba3.smb2.timestamps.time_t_10000000000
+samba3.smb2.timestamps.time_t_-1
+samba3.smb2.timestamps.time_t_-2
+samba3.smb2.timestamps.time_t_1968

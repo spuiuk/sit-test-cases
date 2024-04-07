@@ -24,3 +24,4 @@
 - smb2.openattr
 - smb2.session
 - smb2.create
+- smb2.timestamps
