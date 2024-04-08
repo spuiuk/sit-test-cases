@@ -29,18 +29,23 @@ def get_tmp_mount_point(tmp_root: Path = Path(tempfile.gettempdir())) -> Path:
     return Path(tempfile.mkdtemp(prefix="mnt_", dir=tmp_root))
 
 
-def get_tmp_file(tmp_root: Path = Path(tempfile.gettempdir())) -> Path:
+def get_tmp_file(
+    tmp_root: Path = Path(tempfile.gettempdir()), size: int = 0
+) -> Path:
     """
     Return a temporary file within the temporary directory
 
     Parameters:
     tmp_root: Directory in which to create temporary file.
+    size: If provided, create a file of size bytes
 
     Returns:
     tmp_file: Location of temporary file.
     """
-    (fd, file_name) = tempfile.mkstemp(dir=tmp_root)
-    os.close(fd)
+    fd, file_name = tempfile.mkstemp(dir=tmp_root)
+    if size != 0:
+        with os.fdopen(fd, "wb") as f:
+            f.write(os.urandom(size))
     return Path(file_name)
 
 
