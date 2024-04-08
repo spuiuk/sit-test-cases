@@ -26,17 +26,21 @@ test_info: dict = testhelper.read_yaml(test_info_file)
 # total number of processes
 total_processes: int = 10
 # each with this number of threads
-per_process_threads: int = 100
+per_process_threads: int = 50
 # running the connection test for this many seconds
 test_runtime: int = 30
+# size of test files
+test_file_size = 4 * 1024  # 4k size
+# number of files each thread creates
+test_file_number = 10
 
 
 class SimpleLoadTest:
     """A helper class to generate a simple load on a SMB server"""
 
-    instance_num = 0
-    max_files = 10
-    test_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    instance_num: int = 0
+    max_files: int = test_file_number
+    test_string: str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
     def __init__(
         self,
@@ -45,10 +49,12 @@ class SimpleLoadTest:
         username: str,
         passwd: str,
         testdir: str,
+        testfile: str = "",
     ):
         self.idnum: int = type(self).instance_num
         type(self).instance_num += 1
 
+        self.testfile = testfile
         self.rootpath: str = f"{testdir}/test{self.idnum}"
         self.files: typing.List[str] = []
         self.thread = None
@@ -122,13 +128,23 @@ class SimpleLoadTest:
                     self._simple_run(op="write")
                     return
                 self.stats["read"] += 1
-                self.smbclient.read_text(file)
+                if self.testfile:
+                    tfile = testhelper.get_tmp_file()
+                    with open(tfile, "wb") as fd:
+                        self.smbclient.read(file, fd)
+                    os.unlink(tfile)
+                else:
+                    self.smbclient.read_text(file)
             elif op == "write":
                 file = self._new_file()
                 if not file:
                     return
                 self.stats["write"] += 1
-                self.smbclient.write_text(file, type(self).test_string)
+                if self.testfile:
+                    with open(self.testfile, "rb") as fd:
+                        self.smbclient.write(file, fd)
+                else:
+                    self.smbclient.write_text(file, type(self).test_string)
             elif op == "delete":
                 file = self._del_file()
                 if not file:
@@ -202,12 +218,15 @@ class LoadTest:
         username: str,
         passwd: str,
         testdir: str,
+        testfile: str = "",
     ):
         self.server: str = hostname
         self.share: str = share
         self.username: str = username
         self.password: str = passwd
         self.testdir: str = testdir
+        self.testfile = testfile
+
         self.connections: typing.List[SimpleLoadTest] = []
         self.start_time: float = 0
         self.stop_time: float = 0
@@ -225,6 +244,7 @@ class LoadTest:
                     self.username,
                     self.password,
                     self.testdir,
+                    self.testfile,
                 )
                 self.connections.append(smbclient)
         elif cnum > num:
@@ -281,6 +301,7 @@ def start_process(
     ret_queue: Queue,
     mount_params: typing.Dict[str, str],
     testdir: str,
+    testfile: str = "",
 ) -> None:
     """Start function for test processes"""
     loadtest: LoadTest = LoadTest(
@@ -289,6 +310,7 @@ def start_process(
         mount_params["username"],
         mount_params["password"],
         testdir,
+        testfile,
     )
     loadtest.set_connection_num(numcons)
     loadtest.start_tests(test_runtime)
@@ -311,6 +333,8 @@ def generate_loading_check() -> typing.List[tuple[str, str]]:
 
 @pytest.mark.parametrize("hostname,sharename", generate_loading_check())
 def test_loading(hostname: str, sharename: str) -> None:
+    # Get a tmp file of size 4K
+    tmpfile = testhelper.get_tmp_file(size=test_file_size)
     mount_params: dict[str, str] = testhelper.get_mount_parameters(
         test_info, sharename
     )
@@ -340,6 +364,7 @@ def test_loading(hostname: str, sharename: str) -> None:
                 ret_queue,
                 mount_params,
                 process_testdir,
+                tmpfile,
             ),
         )
         processes.append(process)
@@ -377,6 +402,7 @@ def test_loading(hostname: str, sharename: str) -> None:
 
     smbclient.rmdir(testdir)
     smbclient.disconnect()
+    os.unlink(tmpfile)
 
     print_stats("Total:", total_stats)
     assert (
