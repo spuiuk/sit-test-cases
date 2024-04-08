@@ -33,13 +33,21 @@ class SMBClient:
 
     def disconnect(self) -> None:
         self.connected = False
-        self.ctx.close()
+        try:
+            self.ctx.close()
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"disconnect: {error}")
 
     def listdir(self, path: str = "/") -> typing.List[str]:
         try:
             dentries = self.ctx.listPath(self.share, path)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed to readdir: {error}")
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"listdir: {error}")
+        except base.NotConnectedError as error:
+            raise ConnectionError(f"listdir: {error}")
+
         return [dent.filename for dent in dentries]
 
     def mkdir(self, dpath: str) -> None:
@@ -47,18 +55,30 @@ class SMBClient:
             self.ctx.createDirectory(self.share, dpath)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed to mkdir: {error}")
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"mkdir: {error}")
+        except base.NotConnectedError as error:
+            raise ConnectionError(f"mkdir: {error}")
 
     def rmdir(self, dpath: str) -> None:
         try:
             self.ctx.deleteDirectory(self.share, dpath)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed to rmdir: {error}")
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"rmdir: {error}")
+        except base.NotConnectedError as error:
+            raise ConnectionError(f"rmdir: {error}")
 
     def unlink(self, fpath: str) -> None:
         try:
             self.ctx.deleteFiles(self.share, fpath)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed to unlink: {error}")
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"unlink: {error}")
+        except base.NotConnectedError as error:
+            raise ConnectionError(f"unlink: {error}")
 
     def write_text(self, fpath: str, teststr: str) -> None:
         try:
@@ -66,6 +86,10 @@ class SMBClient:
                 self.ctx.storeFile(self.share, fpath, writeobj)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed in write_text: {error}")
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"write_text: {error}")
+        except base.NotConnectedError as error:
+            raise ConnectionError(f"write: {error}")
 
     def read_text(self, fpath: str) -> str:
         try:
@@ -74,4 +98,8 @@ class SMBClient:
                 ret = readobj.getvalue().decode("utf8")
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed in read_text: {error}")
+        except base.SMBTimeout as error:
+            raise TimeoutError(f"read_text: {error}")
+        except base.NotConnectedError as error:
+            raise ConnectionError(f"read: {error}")
         return ret
