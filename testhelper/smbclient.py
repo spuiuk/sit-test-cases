@@ -80,10 +80,9 @@ class SMBClient:
         except base.NotConnectedError as error:
             raise ConnectionError(f"unlink: {error}")
 
-    def write_text(self, fpath: str, teststr: str) -> None:
+    def write(self, fpath: str, writeobj: typing.IO) -> None:
         try:
-            with io.BytesIO(teststr.encode()) as writeobj:
-                self.ctx.storeFile(self.share, fpath, writeobj)
+            self.ctx.storeFile(self.share, fpath, writeobj)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed in write_text: {error}")
         except base.SMBTimeout as error:
@@ -91,15 +90,22 @@ class SMBClient:
         except base.NotConnectedError as error:
             raise ConnectionError(f"write: {error}")
 
-    def read_text(self, fpath: str) -> str:
+    def read(self, fpath: str, readobj: typing.IO) -> None:
         try:
-            with io.BytesIO() as readobj:
-                self.ctx.retrieveFile(self.share, fpath, readobj)
-                ret = readobj.getvalue().decode("utf8")
+            self.ctx.retrieveFile(self.share, fpath, readobj)
         except smb_structs.OperationFailure as error:
             raise IOError(f"failed in read_text: {error}")
         except base.SMBTimeout as error:
             raise TimeoutError(f"read_text: {error}")
         except base.NotConnectedError as error:
             raise ConnectionError(f"read: {error}")
+
+    def write_text(self, fpath: str, teststr: str) -> None:
+        with io.BytesIO(teststr.encode()) as writeobj:
+            self.write(fpath, writeobj)
+
+    def read_text(self, fpath: str) -> str:
+        with io.BytesIO() as readobj:
+            self.read(fpath, readobj)
+            ret = readobj.getvalue().decode("utf8")
         return ret
