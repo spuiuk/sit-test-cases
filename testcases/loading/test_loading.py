@@ -26,11 +26,11 @@ test_info: dict = testhelper.read_yaml(test_info_file)
 # total number of processes
 total_processes: int = 10
 # each with this number of threads
-per_process_threads: int = 50
+per_process_threads: int = 5
 # running the connection test for this many seconds
 test_runtime: int = 30
 # size of test files
-test_file_size = 4 * 1024  # 4k size
+test_file_size = 16 * 1024 * 1024  # 4k size
 # number of files each thread creates
 test_file_number = 10
 
