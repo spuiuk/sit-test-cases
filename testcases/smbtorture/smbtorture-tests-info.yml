@@ -25,3 +25,9 @@
 - smb2.session
 - smb2.create
 - smb2.timestamps
+- smb2.maxfid
+- smb2.async_dosmode
+- smb2.create_no_streams
+- smb2.bench
+- smb2.winattr2
+- smb2.charset
