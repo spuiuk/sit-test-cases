@@ -9,6 +9,7 @@ def test_read_yaml1():
     assert export1["server"] == "hostname1"
     assert export1["path"] == "/mnt/share/export1-cephfs-vfs"
     assert export1["backend"]["name"] == "cephfs.vfs"
+    assert export1["backend"]["path"] == "/mnt/backend/export1"
     assert "user1" not in export1["users"]
     assert "test2" in export1["users"]
     assert export1["users"]["test2"] == "x"
@@ -17,6 +18,7 @@ def test_read_yaml1():
     assert export2["server"] == "server_name"
     assert "path" not in export2
     assert export2["backend"]["name"] == "glusterfs"
+    assert export2["backend"]["path"] is None
     assert "test2" not in export2["users"]
     assert "user2" in export2["users"]
     assert export2["users"]["user2"] == "user2password"

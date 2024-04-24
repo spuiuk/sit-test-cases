@@ -54,10 +54,11 @@ def read_yaml(test_info_file):
             shares[sharename] = {"name": sharename}
         share = shares[sharename]
         share.setdefault("name", sharename)
-        share.setdefault("backend", {})
         share.setdefault("server", default_server)
         share.setdefault("users", default_users)
+        share.setdefault("backend", {})
         share["backend"].setdefault("name", default_backend)
+        share["backend"].setdefault("path", None)
 
     test_info["shares"] = shares
 
