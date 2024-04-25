@@ -62,3 +62,16 @@ def test_generate_exported_shares():
         arr.append((share["server"], share["name"]))
     assert len(arr) == 1
     assert ("server_name", "export2") in arr
+
+
+def test_get_extra_configuration():
+    testinfo = testhelper.read_yaml("test-info1.yml")
+    sg = testhelper.get_extra_configuration(testinfo, "supplementary_group")
+    assert sg == "test_sg", "Could not read extra configuration"
+    other = testhelper.get_extra_configuration(testinfo, "other")
+    assert other is None, "Incorrectly read other from extra configuration"
+
+    # test-info2.yml does not have extra section
+    testinfo = testhelper.read_yaml("test-info2.yml")
+    sg = testhelper.get_extra_configuration(testinfo, "supplementary_group")
+    assert sg is None, "Could not read extra configuration"

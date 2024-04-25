@@ -192,3 +192,18 @@ def get_exported_shares(test_info: dict) -> typing.List[str]:
         if not is_premounted_share(share):
             arr.append(share["name"])
     return arr
+
+
+def get_extra_configuration(test_info: dict, extra_var: str) -> typing.Any:
+    """Return value of config set in extra section
+
+    Parameters:
+    test_info: Dict containing the parsed yaml file
+    extra_var: string containing extra config value required
+    Returns:
+    value set for the extra_var in the extra section
+    """
+    extra = test_info.get("extra")
+    if extra is None:
+        return None
+    return extra.get(extra_var)

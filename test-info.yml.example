@@ -9,6 +9,12 @@ users:
 # Backend filesystem of the exported shares
 backend: glusterfs
 
+# Additional information which may be used by tests here
+# some tests may be skipped if the required config option is not set
+extra:
+  # The supplementary group to be used by test_supplementary_group
+  supplementary_group: sg
+
 # shares: List of dict of exported shares
 shares:
   # share export1
